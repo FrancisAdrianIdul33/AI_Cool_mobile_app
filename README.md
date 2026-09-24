@@ -1,6 +1,6 @@
 # AI Cool Mobile App
 
-Template repository for a mobile app project.
+Template repository for a mobile app project. Under development.
 
 ## Project Overview
 
