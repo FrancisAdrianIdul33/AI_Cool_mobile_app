@@ -2,27 +2,33 @@
 
 ## Task
 
-Create and develop a mobile application using the Expo framework.
+Build a mobile application called **CarbonTrail** that helps users track their daily carbon footprint and reduce it through a weekly carbon budget, eco-missions, and community goals.
 
 This document provides the initial project context and structure. The full application requirements, features, workflows, and technical details will be finalized and updated later.
 
 ## Context
 
-The project is an Android-only mobile application.
+This app supports **SDG 13 (Climate Action)**.
+
+Users log daily activities (commute, meals, electricity use), and the app estimates their CO2 emissions using standard emission factors. Each user gets a weekly carbon budget that shrinks as they log high-emission activities. Users can complete small eco-missions (e.g., "walk instead of ride today") to earn back carbon credits. At the end of each month, users get a shareable recap of their total savings. Individual actions also combine into a group/community goal (e.g., class or barangay total).
 
 Development will use:
 
 - Expo framework for the mobile application.
 - Visual Studio Code as the integrated development environment.
 - OpenCode as the command-line interface and development assistant.
-- Supabase as the cloud database and backend service.
+- Supabase as the cloud database and backend service (auth, Postgres database, storage, realtime for community goals).
+- Node.js as the runtime.
 
 The application structure, feature requirements, database schema, authentication flow, and UI specifications are not finalized yet.
 
 ## Limits
 
-- The application should initially target Android devices only.
+- The application should target Android devices only.
 - Do not add iOS-specific functionality unless explicitly requested later.
+- No budget for paid carbon-data APIs; must use free/open emission factor datasets.
+- Limited development timeline (school/hackathon project).
+- Should work with minimal internet dependency where possible.
 - Do not finalize architectural decisions that have not yet been defined.
 - Do not create unnecessary features beyond the requirements provided.
 - Keep the project structure flexible so additional requirements can be added later.
@@ -34,13 +40,15 @@ The application structure, feature requirements, database schema, authentication
 ### Mobile Platform
 
 - Target platform: Android only.
-- Development framework: Expo.
+- Development framework: Expo (React Native).
 - Application type: Mobile application.
 
 ### Development Environment
 
 - IDE: Visual Studio Code.
 - CLI: OpenCode.
+- Runtime: Node.js.
+- Version control: GitHub repository.
 - Backend and cloud database: Supabase.
 
 ### Potential Technologies
@@ -48,8 +56,8 @@ The application structure, feature requirements, database schema, authentication
 The following technologies may be defined later:
 
 - Expo Router or another navigation solution.
-- Supabase Authentication.
-- Supabase Storage.
+- Supabase Authentication (confirmed for backend).
+- Supabase Storage (confirmed for backend).
 - Supabase Edge Functions.
 - State management solution.
 - Form validation library.
@@ -64,13 +72,24 @@ These technologies should not be treated as finalized unless explicitly confirme
 ### Project Status
 
 - Current status: Initial planning and project structure.
-- Requirements: Incomplete.
-- Feature list: To be defined.
+- Requirements: Partially defined (core features named, details pending).
+- Feature list: Daily activity logging (commute, meals, electricity), weekly carbon budget, eco-missions, monthly recap, community goals.
 - UI/UX design: To be defined.
-- Database schema: To be defined.
+- Database schema: To be defined (users, logs, missions, community goals planned).
 - Authentication requirements: To be defined.
 - API and backend requirements: To be defined.
 - Deployment process: To be defined.
+
+### Build Order
+
+Before building the main app, first:
+
+1. Set up the GitHub repo and project structure (Expo + Node.js).
+2. Set up the Supabase project (auth, database schema for users, logs, missions, community goals).
+3. Compile a basic emission factor dataset (transport, food, electricity).
+4. Design the daily logging flow (should take under 30 seconds).
+5. Build the carbon calculation logic.
+6. Then design the budget, missions, recap, and community features.
 
 ### Development Expectations
 
@@ -91,9 +110,7 @@ This is an initial project prompt and should be treated as a living document.
 
 The project requirements are not complete. New information may be added later, including:
 
-- Application purpose.
 - Target users.
-- Core features.
 - User journeys.
 - Screen requirements.
 - Navigation structure.
@@ -115,5 +132,6 @@ Do not assume missing details. Ask for clarification when a future task depends 
 - Suggested filename: `PROJECT_PROMPT.md`
 - Suggested location: Project root directory.
 - Purpose: Store the initial project context, development constraints, and future planning details.
+- Project files: Expo/React Native project files (.js/.tsx) + Supabase schema (SQL) + JSON emission factor dataset.
 
 This file should be updated as the project requirements become more complete.
