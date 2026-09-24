@@ -2,7 +2,13 @@ import { StyleSheet, View } from 'react-native';
 
 import { AppText } from '@/components/ui/app-text';
 import { Colors, Radii } from '@/constants/theme';
-import type { FeedItem } from '@/data/mock';
+
+interface FeedItem {
+  id: string;
+  name: string;
+  action: string;
+  time: string;
+}
 
 export function FeedRow({ item }: { item: FeedItem }) {
   return (

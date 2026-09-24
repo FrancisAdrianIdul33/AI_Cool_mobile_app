@@ -3,9 +3,9 @@ import { StyleSheet, View } from 'react-native';
 
 import { AppText } from '@/components/ui/app-text';
 import { Colors, Radii, Shadows } from '@/constants/theme';
-import type { Activity } from '@/data/mock';
+import type { FeedActivity } from '@/lib/types';
 
-export function ActivityCard({ activity }: { activity: Activity }) {
+export function ActivityCard({ activity }: { activity: FeedActivity }) {
   const saved = activity.kind === 'saved';
   return (
     <View style={styles.card}>

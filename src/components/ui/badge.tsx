@@ -5,7 +5,7 @@ import { Colors, Radii } from '@/constants/theme';
 
 interface BadgeProps {
   label: string;
-  variant?: 'mint' | 'white' | 'green' | 'muted';
+  variant?: 'mint' | 'white' | 'green' | 'muted' | 'amber' | 'coral';
 }
 
 export function Badge({ label, variant = 'white' }: BadgeProps) {
@@ -23,6 +23,8 @@ const variants = StyleSheet.create({
   white: { backgroundColor: Colors.surfaceAlt },
   green: { backgroundColor: Colors.green },
   muted: { backgroundColor: Colors.surfaceAlt },
+  amber: { backgroundColor: 'rgba(245, 158, 11, 0.16)' },
+  coral: { backgroundColor: 'rgba(249, 115, 22, 0.16)' },
 });
 
 const textStyles = StyleSheet.create({
@@ -30,6 +32,8 @@ const textStyles = StyleSheet.create({
   white: { color: Colors.text },
   green: { color: Colors.textOnDark },
   muted: { color: Colors.textMuted },
+  amber: { color: Colors.amber },
+  coral: { color: Colors.coral },
 });
 
 const styles = StyleSheet.create({

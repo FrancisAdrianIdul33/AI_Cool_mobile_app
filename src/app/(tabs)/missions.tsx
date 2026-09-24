@@ -7,15 +7,51 @@ import { MissionCard } from '@/components/mission-card';
 import { StreakTracker } from '@/components/streak-tracker';
 import { AppText } from '@/components/ui/app-text';
 import { ProgressBar } from '@/components/ui/progress-bar';
+import { ScreenState } from '@/components/ui/screen-state';
 import { SegmentTabs } from '@/components/ui/segment-tabs';
 import { BottomTabInset, Colors, MaxContentWidth, Radii, Shadows, Spacing } from '@/constants/theme';
-import { badges, missions, profile, specialMissions, weeklyMissions } from '@/data/mock';
+import { useMissions } from '@/hooks/use-missions';
+import type { BadgeRow } from '@/lib/types';
 
 const TABS = ['Weekly', 'Special'];
 
+const rarityTint: Record<BadgeRow['rarity'], string> = {
+  common: Colors.textMuted,
+  rare: Colors.mintDeep,
+  epic: Colors.amber,
+  legendary: Colors.coral,
+};
+
+function BadgeTile({ badge }: { badge: BadgeRow }) {
+  return (
+    <View style={[styles.badgeTile, !badge.unlocked && styles.badgeLocked]}>
+      <View style={[styles.badgeIcon, badge.unlocked && { backgroundColor: Colors.mintTint }]}>
+        {badge.unlocked ? (
+          <AppText variant="title">{badge.icon}</AppText>
+        ) : (
+          <Ionicons name="lock-closed" size={20} color={Colors.textMuted} />
+        )}
+      </View>
+      <AppText variant="caption" weight="medium" numberOfLines={2} style={{ textAlign: 'center' }}>
+        {badge.name}
+      </AppText>
+      <AppText
+        variant="caption"
+        weight="semibold"
+        style={{ color: badge.unlocked ? rarityTint[badge.rarity] : Colors.textMuted }}>
+        {badge.rarity}
+      </AppText>
+    </View>
+  );
+}
+
 export default function MissionsScreen() {
+  const missions = useMissions();
   const [tab, setTab] = useState(0);
-  const list = tab === 0 ? weeklyMissions : specialMissions;
+
+  const list = missions.data?.missions.filter((mission) =>
+    tab === 0 ? mission.period !== 'special' : mission.period === 'special',
+  ) ?? [];
 
   return (
     <SafeAreaView style={styles.safeArea} edges={['top']}>
@@ -31,56 +67,80 @@ export default function MissionsScreen() {
             Missions
           </AppText>
 
-          <StreakTracker streak={profile.streak} />
+          <StreakTracker streak={missions.streak} />
 
           <View style={styles.xpCard}>
             <View style={styles.xpRow}>
               <View style={styles.level}>
                 <Ionicons name="shield-checkmark" size={20} color={Colors.mint} />
                 <AppText variant="title" weight="bold">
-                  Lv {missions.level} {missions.levelTitle}
+                  Lv {missions.level}
                 </AppText>
               </View>
               <AppText variant="small" weight="semibold" tone="mint">
                 {missions.xp}/{missions.xpTotal} XP
               </AppText>
             </View>
-            <ProgressBar value={missions.xp / missions.xpTotal} color={Colors.mint} />
+            <ProgressBar
+              value={missions.xpTotal > 0 ? missions.xp / missions.xpTotal : 0}
+              color={Colors.mint}
+            />
           </View>
+
+          {missions.actionError ? (
+            <AppText
+              variant="small"
+              weight="medium"
+              style={[styles.actionError, { color: Colors.coral }]}>
+              {missions.actionError}
+            </AppText>
+          ) : null}
 
           <View style={styles.tabs}>
             <SegmentTabs options={TABS} active={tab} onChange={setTab} />
           </View>
 
-          <View style={styles.missionList}>
-            {list.map((mission) => (
-              <MissionCard key={mission.id} mission={mission} />
-            ))}
-          </View>
+          {missions.loading ? (
+            <ScreenState loading />
+          ) : missions.error ? (
+            <ScreenState error={missions.error} onRetry={missions.refetch} />
+          ) : (
+            <View style={styles.missionList}>
+              {list.length > 0 ? (
+                list.map((mission) => (
+                  <MissionCard
+                    key={mission.id}
+                    mission={mission}
+                    onClaim={() => missions.claim(mission.id)}
+                    claiming={missions.claimingId === mission.id}
+                  />
+                ))
+              ) : (
+                <AppText variant="small" tone="muted" style={styles.emptyList}>
+                  No missions in this tab right now.
+                </AppText>
+              )}
+            </View>
+          )}
 
           <AppText variant="label" weight="semibold" style={styles.sectionTitle}>
             Badges
           </AppText>
-          <View style={styles.badgeGrid}>
-            {badges.map((badge) => (
-              <View key={badge.id} style={[styles.badgeTile, !badge.unlocked && styles.badgeLocked]}>
-                <View style={[styles.badgeIcon, badge.unlocked && { backgroundColor: Colors.mintTint }]}>
-                  {badge.unlocked ? (
-                    <Ionicons name={badge.icon as never} size={20} color={Colors.mintDeep} />
-                  ) : (
-                    <Ionicons name="lock-closed" size={20} color={Colors.textMuted} />
-                  )}
-                </View>
-                <AppText
-                  variant="caption"
-                  weight="medium"
-                  numberOfLines={2}
-                  style={{ textAlign: 'center' }}>
-                  {badge.label}
+          {missions.loading ? (
+            <ScreenState loading />
+          ) : missions.error ? (
+            <ScreenState error={missions.error} />
+          ) : (
+            <View style={styles.badgeGrid}>
+              {missions.data && missions.data.badges.length > 0 ? (
+                missions.data.badges.map((badge) => <BadgeTile key={badge.badge_id} badge={badge} />)
+              ) : (
+                <AppText variant="small" tone="muted">
+                  No badges yet — complete missions to unlock some.
                 </AppText>
-              </View>
-            ))}
-          </View>
+              )}
+            </View>
+          )}
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -125,11 +185,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 8,
   },
+  actionError: {
+    marginTop: Spacing.md,
+  },
   tabs: {
     marginTop: Spacing.lg,
   },
   missionList: {
     gap: Spacing.sm,
+    marginTop: Spacing.md,
+  },
+  emptyList: {
     marginTop: Spacing.md,
   },
   sectionTitle: {
@@ -148,14 +214,14 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 6,
     alignItems: 'center',
-    gap: 6,
+    gap: 4,
   },
   badgeLocked: {
-    opacity: 0.6,
+    opacity: 0.55,
   },
   badgeIcon: {
-    width: 40,
-    height: 40,
+    width: 44,
+    height: 44,
     borderRadius: 14,
     backgroundColor: Colors.surfaceAlt,
     alignItems: 'center',

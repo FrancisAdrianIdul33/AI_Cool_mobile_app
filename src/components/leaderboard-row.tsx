@@ -3,7 +3,13 @@ import { StyleSheet, View } from 'react-native';
 
 import { AppText } from '@/components/ui/app-text';
 import { Colors, Radii } from '@/constants/theme';
-import type { LeaderboardEntry } from '@/data/mock';
+
+interface LeaderboardEntry {
+  id: string;
+  name: string;
+  initials: string;
+  kgSaved: number;
+}
 
 interface LeaderboardRowProps {
   entry: LeaderboardEntry;
