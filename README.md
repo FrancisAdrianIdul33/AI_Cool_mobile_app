@@ -1,33 +1,56 @@
-# CarbonTrail
+# Welcome to your Expo app 👋
 
-A mobile application that helps users track their daily carbon footprint and reduce it through a weekly carbon budget, eco-missions, and community goals.
+This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
 
-## 1. Overview
+## Get started
 
-CarbonTrail supports **SDG 13 (Climate Action)** by making personal carbon footprint tracking simple. Users log daily activities across commute, meals, and electricity use, and the app estimates their CO2 emissions using standard emission factors. It is an Android mobile application built with Expo (React Native).
+1. Install dependencies
 
-## 2. Features
+   ```bash
+   npm install
+   ```
 
-- **Daily activity logging** — record commute, meals, and electricity use in under 30 seconds.
-- **Weekly carbon budget** — a personal budget that shrinks as high-emission activities are logged.
-- **Eco-missions** — complete small actions (e.g., "walk instead of ride today") to earn back carbon credits.
-- **Monthly recap** — a shareable summary of total carbon savings each month.
-- **Community goals** — individual actions combine into group goals (e.g., class or barangay totals).
+2. Start the app
 
-## 3. Tech Stack
+   ```bash
+   npx expo start
+   ```
 
-- **Framework:** Expo / React Native
-- **Runtime:** Node.js
-- **Database & Backend:** Supabase (auth, Postgres database, storage, realtime)
-- **Emission factors:** free/open datasets (no paid carbon-data APIs)
-- **Tooling:** Visual Studio Code, opencode CLI, Git / GitHub
+In the output, you'll find options to open the app in a
 
-## 4. Getting Started
+- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
+- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
+- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
+- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
 
-The application is currently in its initial planning phase. Setup instructions will be documented here as the project structure, Supabase schema, and emission factor dataset are defined.
+You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
 
-## 5. Development
+## Get a fresh project
 
-- The project is developed on the `development` branch.
-- See `PROJECT_PROMPT.md` for the full project context, constraints, and the planned build order.
-- Setup and run instructions will be added here once the Expo project structure is scaffolded.
+When you're ready, run:
+
+```bash
+npm run reset-project
+```
+
+This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+
+### Other setup steps
+
+- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
+- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
+- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+
+## Learn more
+
+To learn more about developing your project with Expo, look at the following resources:
+
+- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
+- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+
+## Join the community
+
+Join our community of developers creating universal apps.
+
+- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
+- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
