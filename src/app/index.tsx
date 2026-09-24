@@ -1,98 +1,158 @@
-import * as Device from 'expo-device';
-import { Platform, StyleSheet } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { AnimatedIcon } from '@/components/animated-icon';
-import { HintRow } from '@/components/hint-row';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { WebBadge } from '@/components/web-badge';
-import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
-
-function getDevMenuHint() {
-  if (Platform.OS === 'web') {
-    return <ThemedText type="small">use browser devtools</ThemedText>;
-  }
-  if (Device.isDevice) {
-    return (
-      <ThemedText type="small">
-        shake device or press <ThemedText type="code">m</ThemedText> in terminal
-      </ThemedText>
-    );
-  }
-  const shortcut = Platform.OS === 'android' ? 'cmd+m (or ctrl+m)' : 'cmd+d';
-  return (
-    <ThemedText type="small">
-      press <ThemedText type="code">{shortcut}</ThemedText>
-    </ThemedText>
-  );
-}
+import { ActivityCard } from '@/components/activity-card';
+import { CircularBudget } from '@/components/circular-budget';
+import { QuickActions } from '@/components/quick-actions';
+import { AppText } from '@/components/ui/app-text';
+import { Badge } from '@/components/ui/badge';
+import { StatCard } from '@/components/ui/stat-card';
+import { BottomTabInset, Colors, MaxContentWidth, Shadows, Spacing } from '@/constants/theme';
+import { activities, budget, profile, quickActions, stats } from '@/data/mock';
 
 export default function HomeScreen() {
   return (
-    <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
-        <ThemedView style={styles.heroSection}>
-          <AnimatedIcon />
-          <ThemedText type="title" style={styles.title}>
-            Welcome to&nbsp;Expo
-          </ThemedText>
-        </ThemedView>
+    <SafeAreaView style={styles.safeArea} edges={['top']}>
+      <ScrollView
+        style={styles.scroll}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}>
+        <View style={styles.width}>
+          <View style={styles.header}>
+            <View style={styles.headerText}>
+              <AppText variant="caption" weight="semibold" tone="muted">
+                GOOD MORNING
+              </AppText>
+              <AppText variant="heading" weight="semibold">
+                {profile.name}
+              </AppText>
+            </View>
+            <View style={styles.avatarWrap}>
+              <View style={styles.avatar}>
+                <AppText variant="label" weight="bold">
+                  {profile.initials}
+                </AppText>
+              </View>
+              <View style={styles.notifBadge}>
+                <Ionicons name="notifications" size={12} color={Colors.textOnDark} />
+              </View>
+            </View>
+          </View>
 
-        <ThemedText type="code" style={styles.code}>
-          get started
-        </ThemedText>
+          <View style={styles.budgetCard}>
+            <CircularBudget used={budget.used} total={budget.total} unit={budget.unit} />
+            <Badge label="On Track" variant="mint" />
+          </View>
 
-        <ThemedView type="backgroundElement" style={styles.stepContainer}>
-          <HintRow
-            title="Try editing"
-            hint={<ThemedText type="code">src/app/index.tsx</ThemedText>}
-          />
-          <HintRow title="Dev tools" hint={getDevMenuHint()} />
-          <HintRow
-            title="Fresh start"
-            hint={<ThemedText type="code">npm run reset-project</ThemedText>}
-          />
-        </ThemedView>
+          <View style={styles.statsRow}>
+            <StatCard label="Day streak" value={`${stats.streak}`} icon="flame" />
+            <StatCard label="Trees" value={`${stats.trees}`} icon="leaf" />
+            <StatCard label="Level" value={stats.level} icon="shield-checkmark" />
+          </View>
 
-        {Platform.OS === 'web' && <WebBadge />}
-      </SafeAreaView>
-    </ThemedView>
+          <AppText variant="label" weight="semibold" style={styles.sectionTitle}>
+            Quick Log
+          </AppText>
+          <QuickActions actions={quickActions} />
+
+          <View style={styles.feedHeader}>
+            <AppText variant="label" weight="semibold">
+              Today&apos;s footprint
+            </AppText>
+            <AppText variant="small" weight="semibold" tone="mint">
+              See all
+            </AppText>
+          </View>
+          <View style={styles.feed}>
+            {activities.map((activity) => (
+              <ActivityCard key={activity.id} activity={activity} />
+            ))}
+          </View>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    flexDirection: 'row',
-  },
   safeArea: {
     flex: 1,
-    paddingHorizontal: Spacing.four,
-    alignItems: 'center',
-    gap: Spacing.three,
-    paddingBottom: BottomTabInset + Spacing.three,
-    maxWidth: MaxContentWidth,
+    backgroundColor: Colors.shell,
   },
-  heroSection: {
+  scroll: {
+    flex: 1,
+  },
+  scrollContent: {
+    paddingBottom: BottomTabInset + Spacing.lg,
+    paddingHorizontal: Spacing.md,
+  },
+  width: {
+    width: '100%',
+    maxWidth: MaxContentWidth,
+    alignSelf: 'center',
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: Spacing.sm,
+    marginBottom: Spacing.md,
+  },
+  headerText: {
+    gap: 2,
+  },
+  avatarWrap: {
+    width: 52,
+    height: 52,
+  },
+  avatar: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: Colors.green,
     alignItems: 'center',
     justifyContent: 'center',
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    gap: Spacing.four,
   },
-  title: {
-    textAlign: 'center',
+  notifBadge: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: Colors.mint,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 2,
+    borderColor: Colors.shell,
   },
-  code: {
-    textTransform: 'uppercase',
+  budgetCard: {
+    backgroundColor: Colors.background,
+    borderRadius: 20,
+    paddingVertical: Spacing.xl - 8,
+    paddingHorizontal: Spacing.md,
+    alignItems: 'center',
+    gap: Spacing.md,
+    ...Shadows.card,
   },
-  stepContainer: {
-    gap: Spacing.three,
-    alignSelf: 'stretch',
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.four,
-    borderRadius: Spacing.four,
+  statsRow: {
+    flexDirection: 'row',
+    gap: Spacing.sm,
+    marginTop: Spacing.md,
+  },
+  sectionTitle: {
+    marginTop: Spacing.lg,
+    marginBottom: Spacing.sm,
+  },
+  feedHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: Spacing.xl,
+    marginBottom: Spacing.sm,
+  },
+  feed: {
+    gap: Spacing.sm,
   },
 });
