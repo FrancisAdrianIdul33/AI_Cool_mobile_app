@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet } from 'react-native';
+import { ActivityIndicator, Pressable, StyleSheet } from 'react-native';
 
 import { AppText } from '@/components/ui/app-text';
 import { Colors, Radii } from '@/constants/theme';
@@ -8,6 +8,7 @@ interface ButtonProps {
   variant?: 'primary' | 'secondary' | 'quiet';
   onPress?: () => void;
   disabled?: boolean;
+  loading?: boolean;
 }
 
 function labelColor(variant: NonNullable<ButtonProps['variant']>): string {
@@ -15,10 +16,11 @@ function labelColor(variant: NonNullable<ButtonProps['variant']>): string {
   return variant === 'primary' ? Colors.green : Colors.textOnDark;
 }
 
-export function Button({ label, variant = 'primary', onPress, disabled }: ButtonProps) {
+export function Button({ label, variant = 'primary', onPress, disabled, loading }: ButtonProps) {
+  const isDisabled = disabled || loading;
   return (
     <Pressable
-      disabled={disabled}
+      disabled={isDisabled}
       onPress={onPress}
       accessibilityRole="button"
       style={({ pressed }) => [
@@ -26,11 +28,15 @@ export function Button({ label, variant = 'primary', onPress, disabled }: Button
         variant === 'primary' && styles.primary,
         variant === 'secondary' && styles.secondary,
         variant === 'quiet' && styles.quiet,
-        (pressed || disabled) && styles.pressed,
+        (pressed || isDisabled) && styles.pressed,
       ]}>
-      <AppText weight="semibold" style={{ color: labelColor(variant) }}>
-        {label}
-      </AppText>
+      {loading ? (
+        <ActivityIndicator color={labelColor(variant)} />
+      ) : (
+        <AppText weight="semibold" style={{ color: labelColor(variant) }}>
+          {label}
+        </AppText>
+      )}
     </Pressable>
   );
 }
